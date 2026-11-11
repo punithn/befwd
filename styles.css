@@ -323,7 +323,7 @@ html{scroll-behavior:auto}
 .tp .tg.do{border-color:#a9dcbb}.tp .tg.no{border-color:#f3b3ae}
 .tp .tg.do::before{color:#4fae74}.tp .tg.no::before{color:#e46a63}
 /* chip surface: light tint of the same hue, translucent so it also reads on dark cards */
-.tp .tg.do{background:rgba(79,174,116,.13)}.tp .tg.no{background:rgba(228,106,99,.13)}
+.tp .tg.do{background:#e8f5ed;color:#0d0d0b}.tp .tg.no{background:#fcebeb;color:#0d0d0b}
 
 /* ---------- Photographs: drop an <img class="photo"> as the first child of any .pn card ---------- */
 .photo{position:relative;display:block;width:100%;height:100%;object-fit:cover;object-position:center;grid-area:1/1;z-index:0}
@@ -418,7 +418,7 @@ html{scroll-behavior:auto}
 
 
 /* Pattern playground: flexible canvas, 1500 x 1500px only on download */
-.pgv{aspect-ratio:1;width:100%;max-width:720px;border:1px solid var(--ln);margin-top:16px;overflow:hidden}.pgv canvas{display:block;width:100%;height:100%}
+.pgv{aspect-ratio:1;width:100%;max-width:none;border:1px solid var(--ln);margin-top:16px;overflow:hidden}.pgv canvas{display:block;width:100%;height:100%}
 
 /* Logo sizing > Scaling: card split into 4 equal quadrants, each logo centred in its own */
 .szrow{position:absolute;inset:0 0 28px 0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;padding:0;column-gap:0;row-gap:0;justify-content:stretch;align-items:stretch;justify-items:stretch}
@@ -435,4 +435,20 @@ html{scroll-behavior:auto}
  .cr{grid-template-columns:1fr;gap:8px}
  .cr .sl{flex-wrap:wrap;width:100%}
  .cr .sl input{width:100%;flex:1 1 100%;min-width:0;order:3}
+}
+
+/* ---------- Small screens: guides (margins, clearspace, grids) stay off until the card is tapped ---------- */
+@media (max-width:1024px),(hover:none){
+  .gd,.hv:hover .gd,.hv:focus-within .gd{opacity:0}
+  .mg .mz,.mg .mf,.mg .mx,.mg:hover .mz,.mg:hover .mf,.mg:hover .mx{opacity:0}
+  .mg:hover:not(.show) .gl{opacity:.16}
+  .hv:hover .cs{border-color:transparent}
+  .cs::before,.cs::after,.cs2::before,.cs2::after,.cs2 .z,.hv:hover .cs::before,.hv:hover .cs::after,.hv:hover .cs2::before,.hv:hover .cs2::after,.hv:hover .cs2 .z{opacity:0}
+  .ts-card .colg,.ts-card .gl,.ts-card .ts-gap,.ts-card:hover .colg,.ts-card:hover .gl,.ts-card:hover .ts-gap{opacity:0}
+  .hv.show .gd,.hv.show:focus-within .gd{opacity:1}
+  .mg.show .mz,.mg.show .mf,.mg.show .mx{opacity:1}
+  .mg.show .gl,.mg.show:hover .gl{opacity:0}
+  .hv.show .cs{border-color:currentColor}
+  .hv.show .cs::before,.hv.show .cs::after,.hv.show .cs2::before,.hv.show .cs2::after,.hv.show .cs2 .z{opacity:1}
+  .ts-card.show .colg,.ts-card.show .gl,.ts-card.show .ts-gap{opacity:1}
 }

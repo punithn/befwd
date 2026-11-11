@@ -173,3 +173,9 @@ document.getElementById('ctl').addEventListener('click',function(e){var b=e.targ
 document.getElementById('pitch').addEventListener('input',function(e){st.v=+e.target.value;queue()});
 if(window.ResizeObserver)new ResizeObserver(queue).observe(cv);
 addEventListener('resize',queue);addEventListener('load',queue);draw()})();
+
+/* ---------- small screens: tap a card to show or hide its guides ---------- */
+(function(){var mq=matchMedia('(max-width:1024px),(hover:none)');
+document.addEventListener('click',function(e){if(!mq.matches||e.target.closest('a,button,input,select,label'))return;
+ var c=e.target.closest('.hv,.mg,.ts-card');if(c)c.classList.toggle('show')});
+})();

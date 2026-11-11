@@ -17,6 +17,56 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Photo slots: page-level helpers (styles.css is left untouched) -->
+    <style>
+      /* Frame ratios. Put ONE ar-* class on any .pn card. The frame keeps this ratio
+         whatever the ratio of the photograph inside it. */
+      .pn.ar-1x1, .mis .pn.ar-1x1 { aspect-ratio: 1 / 1; }
+      .pn.ar-4x5, .mis .pn.ar-4x5 { aspect-ratio: 4 / 5; }
+      .pn.ar-3x4, .mis .pn.ar-3x4 { aspect-ratio: 3 / 4; }
+      .pn.ar-9x16, .mis .pn.ar-9x16 { aspect-ratio: 9 / 16; }
+      .pn.ar-16x10, .mis .pn.ar-16x10 { aspect-ratio: 16 / 10; }
+      .pn.ar-16x9, .mis .pn.ar-16x9 { aspect-ratio: 16 / 9; }
+      .pn.ar-21x9, .mis .pn.ar-21x9 { aspect-ratio: 21 / 9; }
+
+      /* The photo fills the frame and is cropped to fit, never stretched.
+         It sits out of the layout flow, so its own size can never change the frame. */
+      .pn > .photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        object-fit: cover;
+        object-position: 50% 50%;
+      }
+
+      /* Optional: move the crop towards the subject (add to the img). */
+      .pn > .photo.focus-top { object-position: 50% 0; }
+      .pn > .photo.focus-bottom { object-position: 50% 100%; }
+      .pn > .photo.focus-left { object-position: 0 50%; }
+      .pn > .photo.focus-right { object-position: 100% 50%; }
+
+      /* Captions stay readable on a photograph. */
+      .pn > .photo ~ .cap { background: #0d0d0b; color: #FFF6E8; padding: 4px 9px; opacity: 1; }
+
+      /* The "Photo slot" tag stays visible until the photo has actually loaded. */
+      .pn:has(> .photo) .phn { display: block; }
+      .pn.is-loaded .phn { display: none; }
+    </style>
+    <script>
+      /* Photo loaded: hide its "Photo slot" tag.
+         Photo file missing: drop the broken <img> so the placeholder stays. */
+      document.addEventListener("load", function (e) {
+        var t = e.target;
+        if (t && t.tagName === "IMG" && t.classList.contains("photo")) t.parentNode.classList.add("is-loaded");
+      }, true);
+      document.addEventListener("error", function (e) {
+        var t = e.target;
+        if (t && t.tagName === "IMG" && t.classList.contains("photo")) t.remove();
+      }, true);
+    </script>
   </head>
   <body>
     <!-- SVG sprite: the K&Co logo, referenced everywhere with <use href="#K"> -->
@@ -44,8 +94,7 @@
       <a class="brand big" href="#index" aria-label="BEFWD">
         <svg class="lo" viewBox="0 0 511 236" style="--h:55px;"><use href="#K" /></svg>
       </a>
-      <div class="ver">Brand Guidelines<br>
-      Ver. 1.0, 2026</div>
+      <div class="ver">Brand Guidelines<br>Ver. 1.0</div>
       <ul id="menu"></ul>
      <!-- <div class="foot">
         BEFWD is an ideas lab rooted in what came before. Guidelines template inspired by Brandpad.
@@ -54,9 +103,9 @@
 
     <!-- Content -->
     <main>
-      <!-- Section: Index -->
+      <!-- Section: Home -->
 
-      <section class="hero" id="index" data-t="Index">
+      <section class="hero" id="index" data-t="Home">
         <div class="hg">
           <div class="hl">
             <p class="eyebrow">BEFWD · Ver. 2.0, 2026</p>
@@ -111,7 +160,7 @@
         <div class="sh2 rv">
           <h3 id="clear">Logo and clearspace</h3>
           <p>
-            Hover the logo to see its clearspace. Keep free space equal to the margin shown on every
+            Hover or click the logo to see its clearspace. Keep free space equal to the margin shown on every
             side. The margin is one sixth of the logo height, rounded to a multiple of 4: 20px at
             120px high, 16px at 96px high, 12px at 72px high and 8px at 48px high. Nothing may enter
             this zone. PNG and JPG download every size in one zip, each with its clearspace
@@ -272,7 +321,7 @@
           <h3 id="place">Logo placement</h3>
           <p>
             Our placement system is simple and clear. When placing the logo, strictly use one of the
-            alignments below. Top left is primary. Hover any card to see its margin: 36px, the same
+            alignments below. Top left is primary. Hover or click any card to see its margin: 36px, the same
             distance on every side.
           </p>
         </div>
@@ -939,7 +988,7 @@
         <div class="sh2 rv">
           <h3 id="marg">Margins</h3>
           <p>
-            Hover a card to see its real margin. It is the same distance on every side, measured in
+            Hover or click a card to see its real margin. It is the same distance on every side, measured in
             pixels and always a multiple of 4. Set heading, subheading and body top left, starting
             at the corner of the dotted guides.
           </p>
@@ -959,7 +1008,7 @@
                 Each layer answered a climate, a craft and a community that knew how to wait.
               </div>
             </div>
-            <span class="cap">Light · hover for margins</span>
+            <span class="cap">Light · hover or click for margins</span>
           </div>
           <div class="pn b land mg hv rv">
             <div class="mz"></div>
@@ -975,7 +1024,7 @@
                 Each layer answered a climate, a craft and a community that knew how to wait.
               </div>
             </div>
-            <span class="cap">Dark · hover for margins</span>
+            <span class="cap">Dark · hover or click for margins</span>
           </div>
         </div>
         <div class="spec2 rv">
@@ -1314,6 +1363,601 @@
         </div>
         <div class="pgv rv">
           <canvas id="pcv" role="img" aria-label="Pattern preview"></canvas>
+        </div>
+      </section>
+
+      <!-- Section: Photography -->
+
+      <section id="photography" data-t="Photography">
+        <!-- PHOTO SLOTS. Each card tagged "Photo slot" already holds an <img class="photo">. Drop your file into images/photography/ using the name shown on the card (JPG). It appears on its own. If the file is missing, the placeholder stays. The card’s ar-* class sets the frame ratio, and the photo is always cropped to fill it, never stretched, whatever its own ratio. To move the crop, add focus-top, focus-bottom, focus-left or focus-right to the img. Update the alt text to describe your photograph. -->
+        <div class="sh">
+          <h2 class="rv">Photography</h2>
+          <p class="lead rv">
+            Photographs do the looking first. Warm light, real materials, nothing performed, framed
+            for a thumb on a phone before anything else.
+          </p>
+          <a class="dl" href="#pformats">See the SoMe formats ↓</a>
+        </div>
+
+        <!-- Photographic approach -->
+        <div class="sh2 rv">
+          <h3 id="papp">Photographic approach</h3>
+          <p>
+            Our photographs show what the ideas are made of: lime, brick, shade, hands. They are
+            close, warm and unposed. Most people meet them on a phone, so every image has to work
+            small and in a hurry.
+          </p>
+        </div>
+        <div class="tg2">
+          <div class="s12 dk rv">
+            <p class="lab">One look</p>
+            <div class="big">Close, warm, unposed.</div>
+            <p>
+              We shoot the way we write: observant, unhurried, specific. One subject, one source of
+              light, one reason to stop scrolling.
+            </p>
+          </div>
+          <div class="s4 rv">
+            <div class="w2">Material first</div>
+            <p class="def">Texture and detail before scenery.</p>
+            <div class="ex2">
+              <span>Instead of</span>
+              <s>A wide shot of a pretty building</s>
+              <span>We shoot</span>
+              <b>Lime plaster, raking light, one wall.</b>
+            </div>
+          </div>
+          <div class="s4 rv">
+            <div class="w2">Light as it is</div>
+            <p class="def">Natural light, shot where it falls.</p>
+            <div class="ex2">
+              <span>Instead of</span>
+              <s>Flash, ring lights, studio gloss</s>
+              <span>We shoot</span>
+              <b>Late sun on a courtyard wall.</b>
+            </div>
+          </div>
+          <div class="s4 rv">
+            <div class="w2">Unposed, with permission</div>
+            <p class="def">People at work, never performing.</p>
+            <div class="ex2">
+              <span>Instead of</span>
+              <s>Staged smiles at the camera</s>
+              <span>We shoot</span>
+              <b>A mason, mid-task, reading the wall.</b>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subjects -->
+        <div class="sh2 rv">
+          <h3 id="psubj">Subjects</h3>
+          <p>Three kinds of subject, in this order of use. Most posts need only one.</p>
+        </div>
+        <div class="gp c3">
+          <div class="mis rv">
+            <p class="lab">01 Materials and details</p>
+            <div
+              class="pn ar-3x4 lg"
+              style="background:linear-gradient(155deg,#FFF6E8 0%,#E5BD77 55%,#CC7951 100%)"
+            >
+              <img
+                class="photo"
+                src="images/01 Materials and details.jpg"
+                alt="Lime plaster up close, light skimming across the surface"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · subject-materials.jpg</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">02 Built form and light</p>
+            <div
+              class="pn ar-3x4 lg"
+              style="background:linear-gradient(200deg,#E5BD77 0%,#CC7951 45%,#252523 100%)"
+            >
+              <img
+                class="photo"
+                src="images/02 Built form and light.jpeg"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · subject-built-form.jpg</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">03 People and process</p>
+            <div
+              class="pn ar-3x4 b lg"
+              style="background:linear-gradient(160deg,#CC7951 0%,#252523 60%,#0d0d0b 100%)"
+            >
+              <img
+                class="photo"
+                src="images/03 People and process.jpg"
+                alt="A mason at work on a wall, seen from behind"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · subject-people.jpg</span>
+            </div>
+          </div>
+        </div>
+        <div class="spec2 rv">
+          <span>Materials and details</span>
+          <div>Close and tactile. One surface fills the frame, light skimming across it.</div>
+          <span>Built form and light</span>
+          <div>Walls, thresholds, courtyards. Shade and light do the composing.</div>
+          <span>People and process</span>
+          <div>Hands, tools, work in progress. Backs, profiles and details over faces.</div>
+          <span>Not us</span>
+          <div>Skylines, sunsets, interiors staged for the camera, generic stock.</div>
+        </div>
+
+        <!-- Light and colour -->
+        <div class="sh2 rv">
+          <h3 id="plight">Light and colour</h3>
+          <p>
+            Photographs sit in the same warm world as the palette: bone highlights, ink shadows,
+            ochre and terracotta where the material brings them. One treatment across a set, applied
+            lightly.
+          </p>
+        </div>
+        <div class="gp c2">
+          <div
+            class="pn ar-16x10 tp rv"
+            style="background:linear-gradient(155deg,#FFF6E8 0%,#E5BD77 50%,#CC7951 85%,#252523 100%)"
+          >
+            <img
+              class="photo"
+              src="images/doo.jpg.avif"
+              alt="Warm natural light, bone highlights and ink shadows"
+              loading="lazy"
+              decoding="async"
+            >
+            <span class="tg do">Do</span>
+            <span class="phn">Photo slot · grade-do.jpg</span>
+            <span class="cap">Warm light, bone highlights, ink shadows</span>
+          </div>
+          <div
+            class="pn ar-16x10 tp rv"
+            style="background:linear-gradient(155deg,#8fb4ff 0%,#2a54ff 50%,#ff3dcb 100%)"
+          >
+            <img
+              class="photo"
+              src="images/dont.jpg"
+              alt="Example of a cold, over-saturated, heavily filtered photograph"
+              loading="lazy"
+              decoding="async"
+            >
+            <span class="tg no">Don’t</span>
+            <span class="phn">Photo slot · grade-dont.jpg</span>
+            <span class="cap">Cold cast, pushed saturation, heavy filter</span>
+          </div>
+        </div>
+        <div class="spec2 rv">
+          <span>Highlights</span>
+          <div>Bone, never blue-white or pure white.</div>
+          <span>Shadows</span>
+          <div>Warm ink, never crushed to pure black.</div>
+          <span>Colour</span>
+          <div>
+            Muted. Ochre and terracotta appear when the subject has them, never added in the edit.
+          </div>
+          <span>Treatment</span>
+          <div>Light touch: exposure, white balance, gentle contrast. No presets, no filters.</div>
+          <span>Consistency</span>
+          <div>One grade per set. The same edit on every slide of a carousel.</div>
+        </div>
+
+        <!-- SoMe formats -->
+        <div class="sh2 rv">
+          <h3 id="pformats">SoMe formats</h3>
+          <p>
+            Most people see BEFWD on a phone, in a feed or a story. Shoot loose, then crop to these
+            frames. Vertical is the default: it fills the screen and survives the profile grid. The
+            hatched areas are the zones to keep clear.
+          </p>
+        </div>
+        <div class="gp c4" style="align-items:start">
+          <div class="mis rv">
+            <p class="lab">Feed · 4:5 · 1080 × 1350</p>
+            <div
+              class="pn ar-4x5 lg"
+              style="background:linear-gradient(155deg,#FFF6E8 0%,#E5BD77 55%,#CC7951 100%)"
+            >
+              <img
+                class="photo"
+                src="images/some.jpg"
+                alt="Example photograph cropped for a 4:5 feed post"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · format-feed-4x5.jpg</span>
+              <i style="position:absolute;left:0;top:0;bottom:0;width:3.1%;background:repeating-linear-gradient(135deg,#E5BD77 0 2px,transparent 2px 6px)"></i>
+              <i style="position:absolute;right:0;top:0;bottom:0;width:3.1%;background:repeating-linear-gradient(135deg,#E5BD77 0 2px,transparent 2px 6px)"></i>
+              <span class="cap" style="left:calc(3.1% + 12px)">Grid trims the sides</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">Tall · 3:4 · 1080 × 1440</p>
+            <div
+              class="pn ar-3x4 b lg"
+              style="background:linear-gradient(200deg,#E5BD77 0%,#CC7951 50%,#252523 100%)"
+            >
+              <img
+                class="photo"
+                src="images/some.jpg"
+                alt="Example photograph cropped for a 3:4 tall post"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · format-tall-3x4.jpg</span>
+              <span class="cap">Fills the grid tile</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">Square · 1:1 · 1080 × 1080</p>
+            <div
+              class="pn ar-1x1 lg"
+              style="background:linear-gradient(160deg,#FFF6E8 0%,#E5BD77 60%,#CC7951 100%)"
+            >
+              <img
+                class="photo"
+                src="images/some.jpg"
+                alt="Example photograph cropped for a 1:1 square post"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · format-square-1x1.jpg</span>
+              <i style="position:absolute;left:0;top:0;bottom:0;width:12.5%;background:repeating-linear-gradient(135deg,#E5BD77 0 2px,transparent 2px 6px)"></i>
+              <i style="position:absolute;right:0;top:0;bottom:0;width:12.5%;background:repeating-linear-gradient(135deg,#E5BD77 0 2px,transparent 2px 6px)"></i>
+              <span class="cap" style="left:calc(12.5% + 10px)">Grid trims the sides</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">Story and reel · 9:16 · 1080 × 1920</p>
+            <div
+              class="pn ar-9x16 b lg"
+              style="background:linear-gradient(170deg,#CC7951 0%,#252523 65%,#0d0d0b 100%)"
+            >
+              <img
+                class="photo"
+                src="images/some.jpg"
+                alt="Example photograph cropped for a 9:16 story or reel"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · format-story-9x16.jpg</span>
+              <i style="position:absolute;left:0;right:0;top:0;height:13%;background:repeating-linear-gradient(135deg,#E5BD77 0 2px,transparent 2px 6px)"></i>
+              <i style="position:absolute;left:0;right:0;bottom:0;height:18.2%;background:repeating-linear-gradient(135deg,#E5BD77 0 2px,transparent 2px 6px)"></i>
+              <span class="cap" style="bottom:20%;opacity:.85">
+                Keep 250px clear above, 350px below
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="spec2 rv">
+          <span>Default</span>
+          <div>Feed posts at 4:5, 1080 × 1350px. Most of what we post.</div>
+          <span>Grid crop</span>
+          <div>
+            The profile grid previews every post at 3:4. Keep faces, type and logo inside the centre
+            3:4 of a 4:5 frame.
+          </div>
+          <span>Tall</span>
+          <div>3:4, 1080 × 1440px. Fills the grid tile exactly. Good for a single photograph.</div>
+          <span>Square</span>
+          <div>1:1, 1080 × 1080px. Use sparingly; the grid trims 12.5% off each side.</div>
+          <span>Story and reel</span>
+          <div>
+            9:16, 1080 × 1920px. Keep type, logo and faces out of the top 250px and the bottom
+            350px. Reel covers are cropped to 3:4 on the grid.
+          </div>
+          <span>Landscape</span>
+          <div>Avoid. Wide frames look small in a vertical feed.</div>
+          <span>Export</span>
+          <div>sRGB, JPG, 1080px wide. Shoot at full resolution and crop down; never upscale.</div>
+          <span>Check</span>
+          <div>Platforms change these. Preview in the app before publishing.</div>
+        </div>
+
+        <!-- Carousels and sets -->
+        <div class="sh2 rv">
+          <h3 id="pset">Carousels and sets</h3>
+          <p>
+            A carousel is a short essay. The first frame stops the scroll, the last one asks the
+            question. Keep ratio, grade and light constant from slide to slide.
+          </p>
+        </div>
+        <div class="gp c4" style="align-items:start">
+          <div class="mis rv">
+            <p class="lab">1 · Hook: a close detail</p>
+            <div
+              class="pn ar-4x5 lg"
+              style="background:linear-gradient(155deg,#FFF6E8 0%,#E5BD77 55%,#CC7951 100%)"
+            >
+              <img
+                class="photo"
+                src="images/hook.jpeg"
+                alt="Carousel slide 1: a close detail that stops the scroll"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · carousel-1-hook.jpg</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">2 · Context: a wider view</p>
+            <div
+              class="pn ar-4x5 lg"
+              style="background:linear-gradient(200deg,#E5BD77 0%,#CC7951 50%,#252523 100%)"
+            >
+              <img
+                class="photo"
+                src="images/context.jpeg"
+                alt="Carousel slide 2: a wider view that gives context"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · carousel-2-context.jpg</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">3 · Detail: the reason</p>
+            <div
+              class="pn ar-4x5 b lg"
+              style="background:linear-gradient(160deg,#CC7951 0%,#252523 70%)"
+            >
+              <img
+                class="photo"
+                src="images/detail2.jpg"
+                alt="Carousel slide 3: the detail that explains the idea"
+                loading="lazy"
+                decoding="async"
+              >
+              <span class="phn">Photo slot · carousel-3-detail.jpg</span>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab">4 · Question: an open end</p>
+            <div class="pn b tp" style="aspect-ratio:4/5; background-color:#CC7951">
+              <div class="tb">
+                <div class="serif" style="font-size:9cqw;line-height:1.1">
+                  Every brick carries the touch of a human hand.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="spec2 rv">
+          <span>Order</span>
+          <div>Hook, context, detail, question. Three to six slides.</div>
+          <span>First frame</span>
+          <div>One subject that still reads at thumbnail size. No type needed.</div>
+          <span>Last frame</span>
+          <div>An open question worth debating, as on every post.</div>
+          <span>Alt text</span>
+          <div>One plain sentence per image: the material, the light, the subject.</div>
+        </div>
+
+        <!-- Type and logo on photographs -->
+        <div class="sh2 rv">
+          <h3 id="ptype">Type and logo on photographs</h3>
+          <p>
+            Type sits on a calm part of the frame, in bone or ink, top left on the margin. If the
+            frame has no calm part, choose another frame; don’t add boxes, shadows or gradients to
+            rescue it. The logo follows the placement rules and stays in one colour.
+          </p>
+        </div>
+        <div class="gp c2">
+          <div
+            class="pn b ar-16x10 tp rv"
+            style="background:linear-gradient(160deg,#CC7951 0%,#252523 55%,#0d0d0b 100%)"
+          >
+            <img
+              class="photo"
+              src="images/THDct7sDWQrijvIjQxkejdCcTe3mb2nDO-Rg9qWlQhMCKze63_C8fC2UNO_wXTCdZwiB-c6d2lX8WZOZR5oBwI0zb45l50ZN5uR6j10pt23dyur9ewF6WpsTL0weN21QLvCC5WBhCHzDrgjC1ioqbA-TluxgXk9wupTt20x-dQ8zOZwgJYfn6MyIodyqUozI.jpeg"
+              alt="Photograph with a calm area where type can sit"
+              loading="lazy"
+              decoding="async">
+            <span class="phn">Photo slot · type-do.jpg</span>
+            <span class="tg do">Do · type on a calm area</span>
+            <div class="tb" style="text-align:left;margin-top:14cqh">
+              <div class="ah">Rooted in what came before.</div>
+              <div class="a">No one built a thick wall by accident. Each layer answered a climate, a craft and a community that knew how to wait.</div>
+            </div>
+          </div>
+          <div
+            class="pn b ar-16x10 rv"
+            style="background:linear-gradient(160deg,#CC7951 0%,#252523 55%,#0d0d0b 100%)"
+          >
+            <img
+              class="photo"
+              src="images/C9zlCKWFQJHkoEliZdWR7EWeTigKc0-RRqvZHCESM3yOcQhR7meOEncl1iOxCscmV8hUpcsV4s8PA-u-5v4k0yHjAWjFhzD0r6nST7bYzAcS7LbC3lGuErh28Vs-Zi_S0GfRAZmcfOBKpVGzNm78XlhP9P_af6kkhFNCwq6tyKWcCS0qRvpTOkwTyu48B-k3.jpeg"
+              alt="Photograph with the logo placed on the margin, top left"
+              loading="lazy"
+              decoding="async"
+            >
+            <span class="phn">Photo slot · logo-do.jpg</span>
+            <span
+              class="tg do"
+              style="position:absolute;left:16px;bottom:12px;font-size:12px;font-weight:600;border:1px solid #a9dcbb;background:rgba(79,174,116,.13);border-radius:99px;padding:1px 11px;line-height:1.6"
+            >
+              ✓ Do · logo on the margin
+            </span>
+            <svg
+              class="lo"
+              viewBox="0 0 511 236"
+              style="--h:14cqmin;position:absolute;left:24px;top:24px"
+            >
+              <use href="#K" />
+            </svg>
+          </div>
+          <div class="pn w land tp tp1 rv" style="--s:.3">
+            <span class="tg no">Don’t · type over busy detail</span>
+            <div class="tb" style="text-align:left;margin-top:14cqh">
+              <div class="ah">Walls that breathe</div>
+              <div class="as">Rooted in what came before</div>
+            </div>
+          </div>
+          <div
+            class="pn land tp rv"
+            style="img "
+          >
+            <span class="tg no">Don’t · shadows on type</span>
+			  <img
+              class="photo"
+              src="images/02YN24CzUyw6YYJ9Te_hZIy9Tr71d12sydzWieVBbppIAMxjSz7Ibmblas4_BJn9XMT-8aDFzPPX6RbCkR-akliki7Fp0uHznzyPsgUZ2anvvd7uC4WGPIlxvEbZ4TZSyDqIttQg6lXxHyES_JCAYzvo6bIugGvpNRsRR0SwdFZUHoSkrTfQBPxgozSyaAaV.jpeg"
+              alt="Photograph with the logo placed on the margin, top left"
+              loading="lazy"
+              decoding="async"
+            >
+            <div class="tb" style="text-align:left;margin-top:14cqh">
+				
+              <div class="ah" style="color:#FFF6E8;text-shadow:3px 3px 6px #0d0d0b">
+                Walls that breathe
+              </div>
+              <div class="as" style="color:#FFF6E8;text-shadow:2px 2px 4px #0d0d0b">
+                Rooted in what came before
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- People and permission -->
+        <div class="sh2 rv">
+          <h3 id="pppl">People and permission</h3>
+          <p>
+            Our subjects are people and places we have asked. Recognisable faces appear only with
+            agreement.
+          </p>
+        </div>
+        <div class="spec2 rv">
+          <span>Consent</span>
+          <div>Written permission from anyone recognisable, before we post.</div>
+          <span>Public spaces</span>
+          <div>No faces of passers-by. Shoot backs, hands or distance.</div>
+          <span>Children</span>
+          <div>Never identifiable without a guardian’s written permission.</div>
+          <span>Sources</span>
+          <div>Shoot it, commission it or license it. Nothing lifted from other accounts.</div>
+          <span>Credit</span>
+          <div>Name the photographer and the place in the caption.</div>
+        </div>
+
+        <!-- Photography · Misuse -->
+        <div class="sh2 rv">
+          <h3 id="phmis">Misuse</h3>
+          <p>
+            Our photographs should look like they come from the same hand. Below are some things to
+            always avoid.
+          </p>
+        </div>
+        <div class="gp c4">
+          <div class="mis rv">
+            <p class="lab no">Do not use heavy filters</p>
+            <div class="pn sq lg" style="background:linear-gradient(150deg,#ff3dcb,#ffe14d 50%,#19d3ff)">  <img
+              class="photo"
+              src="images/pexels-dario-rawert-724203352-19019479.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"> </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not use a cold colour cast</p>
+            <div class="pn sq lg" style="background:linear-gradient(150deg,#cfe0ff,#5c7fa8 55%,#1d2b3f)">
+			  <img
+              class="photo"
+              src="images/pexels-essentia-media-2154502099-33685861.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"></div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not stretch or upscale</p>
+            <div class="pn w sq lg">
+				 <img
+              class="photo"
+              src="images/0120.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async">
+             <!-- <div style="width:36cqw;height:36cqw;border-radius:50%;background:#CC7951;transform:scaleX(1.8);filter:blur(2px)">
+				 </div>-->
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not set type over busy detail</p>
+            <div class="pn w sq tp tp1" style="--s:.3">
+				 <img
+              class="photo"
+              src="images/befwd-pattern-forward-1500.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async">
+              <div class="tb">
+                <div class="f1 serif" style="font-size:10cqw">Walls that breathe</div>
+              </div>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not add shadows to type</p>
+            <div
+              class="pn sq tp"
+              style="background:linear-gradient(155deg,#FFF6E8 0%,#E5BD77 50%,#CC7951 100%)"
+            >
+				 <img
+              class="photo"
+              src="images/02YN24CzUyw6YYJ9Te_hZIy9Tr71d12sydzWieVBbppIAMxjSz7Ibmblas4_BJn9XMT-8aDFzPPX6RbCkR-akliki7Fp0uHznzyPsgUZ2anvvd7uC4WGPIlxvEbZ4TZSyDqIttQg6lXxHyES_JCAYzvo6bIugGvpNRsRR0SwdFZUHoSkrTfQBPxgozSyaAaV.jpeg"
+              alt=""
+              loading="lazy"
+              decoding="async">
+				
+              <div class="tb">
+                <div
+                  class="f1 serif"
+                  style="font-size:10cqw;color:#FFF6E8;text-shadow:3px 3px 6px #0d0d0b"
+                >
+                  Walls that breathe
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not add borders or stickers</p>
+            <div class="pn bn sq lg">
+				 <img
+              class="photo"
+              src="images/do.jpeg"
+              alt=""
+              loading="lazy"
+              decoding="async">
+				
+              <i style="position:absolute;inset:6cqw;border:4px solid #CC7951"></i>
+              <i
+                style="position:absolute;right:9cqw;top:9cqw;width:20cqw;height:20cqw;border-radius:50%;background:#E5BD77;display:grid;place-items:center;font-size:5.5cqw;font-weight:700;font-style:normal;transform:rotate(12deg)"
+              >
+                NEW!
+              </i>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not place the logo on busy detail</p>
+            <div class="pn w sq lg tp1" style="--s:.3">
+              <svg class="lo" viewBox="0 0 511 236" style="--h:20cqh"><use href="#K" /></svg>
+            </div>
+          </div>
+          <div class="mis rv">
+            <p class="lab no">Do not mix ratios in one set</p>
+            <div class="pn w sq lg">
+              <div style="display:flex;align-items:flex-end;gap:3cqw">
+                <i style="display:block;width:18cqw;aspect-ratio:4/5;background:#CC7951"></i>
+                <i style="display:block;width:18cqw;aspect-ratio:1;background:#E5BD77"></i>
+                <i style="display:block;width:18cqw;aspect-ratio:9/16;background:#0d0d0b"></i>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
