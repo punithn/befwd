@@ -1,7 +1,7 @@
 /* Brand guidelines template · structured after Brandpad "International" · black and white */
 :root{--bg:#fff;--fg:#0d0d0b;--mu:#6d6d6b;--tx:#393937;--ln:#dedede;--sf:#f0f0f0;--w:290px;--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 24px)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 24px)}
 body{background:var(--bg);color:var(--fg);font:400 16px/1.6 Inter,system-ui,-apple-system,Helvetica,Arial,sans-serif;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
 svg use{fill:currentColor}

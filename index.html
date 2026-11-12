@@ -57,7 +57,7 @@
     </style>
     <script>
       /* Photo loaded: hide its "Photo slot" tag.
-         Photo file missing: drop the broken <img> so the placeholder stays. */
+         Photo file missing: drop the broken <img loading="lazy" decoding="async"> so the placeholder stays. */
       document.addEventListener("load", function (e) {
         var t = e.target;
         if (t && t.tagName === "IMG" && t.classList.contains("photo")) t.parentNode.classList.add("is-loaded");
@@ -658,12 +658,12 @@
           </p>
         </div>
         <div class="gp c2">
-          <button class="sw rv" data-h="#161613" style="--c:#161613;--t:#FFF6E8">
+          <button class="sw rv" data-h="#393937" style="--c:#393937;--t:#FFF6E8">
             <b>Soot</b>
             <ul>
-              <li>HEX #161613</li>
-              <li>RGB 22, 22, 19</li>
-              <li>CMYK 0, 0, 14, 91</li>
+              <li>HEX #393937</li>
+              <li>RGB 57, 57, 55</li>
+              <li>CMYK 0, 0, 4, 78</li>
             </ul>
           </button>
           <button class="sw rv" data-h="#252523" style="--c:#252523;--t:#FFF6E8">
@@ -686,7 +686,7 @@
           <div style="flex:38;background:#0d0d0b;color:#FFF6E8">38 Ink</div>
           <div style="flex:12;background:#E5BD77">12</div>
           <div style="flex:8;background:#CC7951">8</div>
-          <div style="flex:2;background:#161613"></div>
+          <div style="flex:2;background:#393937"></div>
           <div style="flex:2;background:#252523"></div>
         </div>
 
@@ -1336,7 +1336,7 @@
               <button class="swb" data-bg="#0D0D0B" style="--c:#0D0D0B" title="Ink" aria-label="Ink"></button>
               <button class="swb" data-bg="#E5BD77" style="--c:#E5BD77" title="Ochre" aria-label="Ochre"></button>
               <button class="swb" data-bg="#CC7951" style="--c:#CC7951" title="Terracotta" aria-label="Terracotta"></button>
-              <button class="swb" data-bg="#161613" style="--c:#161613" title="Soot" aria-label="Soot"></button>
+              <button class="swb" data-bg="#393937" style="--c:#393937" title="Soot" aria-label="Soot"></button>
               <button class="swb" data-bg="#252523" style="--c:#252523" title="Charcoal" aria-label="Charcoal"></button>
             </div>
           </div>
@@ -1347,7 +1347,7 @@
               <button class="swb act" data-ln="#0D0D0B" style="--c:#0D0D0B" title="Ink" aria-label="Ink"></button>
               <button class="swb" data-ln="#E5BD77" style="--c:#E5BD77" title="Ochre" aria-label="Ochre"></button>
               <button class="swb" data-ln="#CC7951" style="--c:#CC7951" title="Terracotta" aria-label="Terracotta"></button>
-              <button class="swb" data-ln="#161613" style="--c:#161613" title="Soot" aria-label="Soot"></button>
+              <button class="swb" data-ln="#393937" style="--c:#393937" title="Soot" aria-label="Soot"></button>
               <button class="swb" data-ln="#252523" style="--c:#252523" title="Charcoal" aria-label="Charcoal"></button>
             </div>
           </div>
@@ -1369,7 +1369,7 @@
       <!-- Section: Photography -->
 
       <section id="photography" data-t="Photography">
-        <!-- PHOTO SLOTS. Each card tagged "Photo slot" already holds an <img class="photo">. Drop your file into images/photography/ using the name shown on the card (JPG). It appears on its own. If the file is missing, the placeholder stays. The card’s ar-* class sets the frame ratio, and the photo is always cropped to fill it, never stretched, whatever its own ratio. To move the crop, add focus-top, focus-bottom, focus-left or focus-right to the img. Update the alt text to describe your photograph. -->
+        <!-- PHOTO SLOTS. Each card tagged "Photo slot" already holds an <img loading="lazy" decoding="async" class="photo">. Drop your file into images/photography/ using the name shown on the card (JPG). It appears on its own. If the file is missing, the placeholder stays. The card’s ar-* class sets the frame ratio, and the photo is always cropped to fill it, never stretched, whatever its own ratio. To move the crop, add focus-top, focus-bottom, focus-left or focus-right to the img. Update the alt text to describe your photograph. -->
         <div class="sh">
           <h2 class="rv">Photography</h2>
           <p class="lead rv">

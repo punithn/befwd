@@ -89,18 +89,13 @@ function cap(){var l=q('main>section,main .sh2,main .gp'),i=0;for(;i<l.length;i+
 addEventListener('resize',function(){if(!tm){cap();doc.classList.add('rs')}clearTimeout(tm);tm=setTimeout(function(){if(anc){var r=anc.getBoundingClientRect();scrollBy({top:r.top-off,behavior:'instant'})}doc.classList.remove('rs');tm=0},180)});
 })();
 
-/* ---------- smooth scrolling for every in-page link ---------- */
+/* ---------- in-page links jump straight to the section (no smooth scrolling) ---------- */
 (function(){
-var doc=document.documentElement,reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,raf=0;
-function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
-function go(el){var pad=parseFloat(getComputedStyle(doc).scrollPaddingTop)||0,y0=scrollY,dy=el.getBoundingClientRect().top+y0-pad-y0;
- cancelAnimationFrame(raf);if(Math.abs(dy)<2){scrollTo(0,y0+dy);return}
- var d=Math.min(2400,Math.max(600,500+Math.abs(dy)*.12)),t0=0;
- (function s(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/d);scrollTo({top:y0+dy*ease(p),behavior:'instant'});if(p<1)raf=requestAnimationFrame(s)})(performance.now())}
+var doc=document.documentElement;
+function go(el){var pad=parseFloat(getComputedStyle(doc).scrollPaddingTop)||0;scrollTo({top:el.getBoundingClientRect().top+scrollY-pad,behavior:'instant'})}
 document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(!a||e.defaultPrevented)return;
  var id=a.getAttribute('href').slice(1),el=id?document.getElementById(id):document.body;if(!el)return;e.preventDefault();
  setTimeout(function(){go(el);history.replaceState(null,'','#'+id)},innerWidth<=1024?60:0)});
-['wheel','touchstart','keydown'].forEach(function(n){addEventListener(n,function(){cancelAnimationFrame(raf)},{passive:true})});
 })();
 
 
